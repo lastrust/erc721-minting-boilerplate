@@ -1,70 +1,66 @@
-# Getting Started with Create React App
+# ERC721 Minting Boilerplate
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+By cloning this repository, you can instantly create a mint application of ERC721 minting.
 
-## Available Scripts
+## Overview
 
-In the project directory, you can run:
+This application uses the [bunzz-sdk](https://www.npmjs.com/package/bunzz-sdk) to communicate smart contact.
 
-### `yarn start`
+For detailed instructions on how to use bunzz-sdk, see [here](https://www.npmjs.com/package/bunzz-sdk).
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+## Getting Started
 
-The page will reload if you make edits.\
-You will also see any lint errors in the console.
+### 1. Clone
 
-### `yarn test`
+```bash
+$ git clone https://github.com/lastrust/erc721-minting-boilerplate.git
+$ cd erc721-minting-boilerplate
+```
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+### 2. Create your DApp with Bunzz
 
-### `yarn build`
+Please access to [Bunzz](https://app.bunzz.dev).
+And pease refer to [this video]() to create a DApp project and deploy smart contract.
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+### 3. Get DApp ID and API Key
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+When you have finished creating your DApp project and deploying smart contract, copy the **API key** and **DApp ID**.
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+You can get your **API Key** and **DApp ID** from **Client SDK** in sidebar.
 
-### `yarn eject`
+<img width="235" alt="スクリーンショット 2021-12-09 11 47 40" src="https://user-images.githubusercontent.com/53442928/145325497-913c5509-0b3f-44ea-8a26-ff7399218dbc.png">
 
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
+And write them in the `.env` file.
 
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+```bash
+# Create .env file
+$ touch .env
+```
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
+Contents of `.env` file↓
+Please replace YOUR_DAPP_ID and YOUR_API_KEY with values that you copied.
+```
+REACT_APP_DAPP_ID=YOUR_DAPP_ID
+REACT_APP_API_KEY=YOUR_API_KEY
+```
 
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
+### 4. Create NFT Storage
 
-## Learn More
+NFT Storage is free storage for NFT.
+Please access to [this page](https://nft.storage/) and login.
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+You can get your API key from **API Keys** page.
+<img width="1440" alt="スクリーンショット 2021-12-09 14 52 36" src="https://user-images.githubusercontent.com/53442928/145342198-536d75b5-cb11-4736-8748-5b8ad8fd2063.png">
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+Let's add `REACT_APP_NFT_STORAGE_KEY` to `.env` file.
+```
+...
+REACT_APP_NFT_STORAGE_KEY=YOUR_NFT_STORAGE_KEY
+```
 
-### Code Splitting
+### 5. Start application
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
+```bash
+$ yarn start
+```
 
-### Analyzing the Bundle Size
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
-
-### Making a Progressive Web App
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
-
-### Advanced Configuration
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `yarn build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
