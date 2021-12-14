@@ -22,6 +22,8 @@ $ cd erc721-minting-boilerplate
 Please access to [Bunzz](https://app.bunzz.dev).
 And pease refer to [this video]() to create a DApp project and deploy smart contract.
 
+For this application, you need to deploy "NFT (IPFS Mitable)" smart contract at a minimum.
+
 ### 3. Get DApp ID and API Key
 
 When you have finished creating your DApp project and deploying smart contract, copy the **API key** and **DApp ID**.
@@ -64,3 +66,21 @@ REACT_APP_NFT_STORAGE_KEY=YOUR_NFT_STORAGE_KEY
 $ yarn start
 ```
 
+
+### 6. Try to use application
+
+This is the screen for minting the NFT.
+<img width="1440" alt="スクリーンショット 2021-12-14 10 51 20" src="https://user-images.githubusercontent.com/53442928/145918300-695353d0-88f7-40f5-a182-69b37142098a.png">
+
+Now let's mint the NFT. Enter the "Token Name", "description" and "image" in Step 1. </br>
+When you are done, press the "mint" button.
+
+Minting creates an NFT on the blockchain.
+This application stores NFT metadata in IPFS.
+
+Then let's fetch the NFT you created. Below the mint button, you can see the ID. Please enter this ID to form in Step2 and press the "get" button.
+
+You can see the NFT you created.
+<img width="1440" alt="スクリーンショット 2021-12-14 11 18 29" src="https://user-images.githubusercontent.com/53442928/145921034-45e8c10a-9fb4-40c4-b279-51ac69431fdc.png">
+
+Please try to improve this application and make it more useful.
