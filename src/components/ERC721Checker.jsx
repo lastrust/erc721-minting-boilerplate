@@ -11,7 +11,7 @@ export const ERC721Checker = ({ bunzz, userAddress }) => {
     setOnGoing(true);
     try {
       const contract = await bunzz.getContract("NFT (IPFS Mintable)");
-      const { response: tokenUri } = await contract.tokenURI(tokenId);
+      const { data: tokenUri } = await contract.tokenURI(tokenId);
       const url = tokenUri.replace(/^ipfs:\/\//, "https://ipfs.io/ipfs/");
       const res = await fetch(url);
       const data = await res.json();

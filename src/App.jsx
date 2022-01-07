@@ -1,9 +1,8 @@
 import { useEffect, useState } from "react";
 
-// import { ERC20Minter } from "./components/ERC20.jsx";
 import { ERC721Minter } from "./components/ERC721Minter";
 import { ERC721Checker } from "./components/ERC721Checker";
-import { bunzz } from "bunzz-sdk";
+import bunzz from "bunzz-sdk";
 
 const DAPP_ID = process.env.REACT_APP_DAPP_ID;
 const API_KEY = process.env.REACT_APP_API_KEY;
