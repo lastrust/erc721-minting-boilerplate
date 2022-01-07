@@ -63,11 +63,9 @@ export const ERC721Minter = ({ bunzz, userAddress }) => {
       const inputUrl = metadata.url.replace(/^ipfs:\/\//, "");
       console.log(inputUrl);
       const tx = await contract.safeMint(userAddress, inputUrl);
-      const ethersTx = tx.ethersTx;
-      console.log(ethersTx);
-      const receipt = await ethersTx.wait();
+      const receipt = await tx.wait();
       const event = receipt.events[0];
-      const _tokenId = event.args[2].toString();
+      const _tokenId = event.args[2];
       setTokenId(_tokenId);
       setBase64(null);
       window.alert("Succeeded to mint");
