@@ -3,10 +3,10 @@
     <p className="title">Step2: Get your NFT</p>
     <input placeholder="token ID" v-model="tokenId" type="text" />
     <div v-if="onGoing" className="center">Loading...</div>
-    <button v-else @click="get">get</button
-    ><img v-if="base64" :src="base64" alt="hoge" className="image" />
+    <button v-else @click="get">get</button>
     <p v-if="name">Name: {{ name }}</p>
     <p v-if="description">Description: {{ description }}</p>
+    <img v-if="image" :src="image" alt="image" className="image" />
   </div>
 </template>
 
@@ -17,7 +17,7 @@ export default {
     return {
       name: "",
       description: "",
-      base64: null,
+      image: null,
       onGoing: false,
       tokenId: null,
     };
@@ -36,7 +36,10 @@ export default {
           const url = tokenUri.replace(/^ipfs:\/\//, "https://ipfs.io/ipfs/");
           const res = await fetch(url);
           const data = await res.json();
-          this.base64 = data.base64;
+          this.image = data.image.replace(
+            /^ipfs:\/\//,
+            "https://ipfs.io/ipfs/"
+          );
           this.name = data.name;
           this.description = data.description;
         } catch (err) {

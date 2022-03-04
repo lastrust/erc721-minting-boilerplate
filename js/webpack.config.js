@@ -1,5 +1,6 @@
 const path = require('path');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
+const Dotenv = require('dotenv-webpack');
 require("@babel/register");
 
 const config = {
@@ -24,7 +25,10 @@ const config = {
   plugins: [
     new HtmlWebpackPlugin({
         hash: true
-    })
+    }),
+    new Dotenv({
+      path: path.resolve(__dirname, `.env`),
+    }),
   ],
   resolve: {
     modules: [

@@ -5,12 +5,11 @@ const nftStorage = new NFTStorage({
   token: process.env.REACT_APP_NFT_STORAGE_KEY,
 });
 
-const store = async (name, description, data, type, base64) => {
+const store = async (name, description, data, fileName, type) => {
   const metadata = await nftStorage.store({
     name,
     description,
-    image: new File([data], { type }),
-    base64: base64,
+    image: new File([data], fileName, { type }),
   });
   console.log(metadata);
   return metadata;
@@ -18,6 +17,7 @@ const store = async (name, description, data, type, base64) => {
 
 export const ERC721Minter = ({ bunzz, userAddress }) => {
   const [blob, setBlob] = useState(null);
+  const [fileName, setFileName] = useState(null);
   const [base64, setBase64] = useState(null);
   const [onGoing, setOnGoing] = useState(false);
   const [tokenId, setTokenId] = useState(null);
@@ -26,13 +26,14 @@ export const ERC721Minter = ({ bunzz, userAddress }) => {
   const [description, setDescription] = useState("");
 
   const select = (e) => {
-    console.log("hello");
     const file = e.target.files[0];
     console.log(file);
+
     if (file) {
       readAsBlob(file);
       readAsBase64(file);
       setType(file.type);
+      setFileName(file.name);
     }
   };
 
@@ -57,13 +58,14 @@ export const ERC721Minter = ({ bunzz, userAddress }) => {
   const submit = async () => {
     setOnGoing(true);
     try {
-      const metadata = await store(name, description, blob, type, base64);
-      console.log("url", metadata.url);
+      const metadata = await store(name, description, blob, fileName, type);
       const contract = await bunzz.getContract("NFT (IPFS Mintable)");
       const inputUrl = metadata.url.replace(/^ipfs:\/\//, "");
-      console.log(inputUrl);
+
       const tx = await contract.safeMint(userAddress, inputUrl);
       const receipt = await tx.wait();
+      console.log(receipt);
+
       const event = receipt.events[0];
       const _tokenId = event.args[2];
       setTokenId(_tokenId);

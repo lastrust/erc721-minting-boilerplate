@@ -22,7 +22,7 @@ $ cd <into the folder>
 Please access to [Bunzz](https://app.bunzz.dev).
 And pease refer to [this video]() to create a DApp project and deploy smart contract.
 
-For this application, you need to deploy "NFT (IPFS Mitable)" smart contract at a minimum.
+For this application, you need to deploy "NFT (IPFS Mintable)" smart contract at a minimum.
 
 ### 3. Get DApp ID and API Key
 
@@ -69,7 +69,7 @@ $ yarn serve
 ### 6. Try to use application
 
 Now let's mint the NFT. Enter the "Token Name", "description" and "image" in Step 1. </br>
-When you are done, press the "mint" button.
+After you finished it, press the "mint" button.
 
 Minting creates an NFT on the blockchain.
 This application stores NFT metadata in IPFS.

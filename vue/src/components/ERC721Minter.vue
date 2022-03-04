@@ -15,32 +15,20 @@
 </template>
 
 <script>
-const customStore = async (name, description, data, type, base64) => {
-  var formData = new FormData();
-  formData.append("image", new File([data], { type }));
-  formData.append(
-    "meta",
-    JSON.stringify({
-      name,
-      description,
-      base64: base64,
-    })
-  );
-  const response = await fetch("https://api.nft.storage/store/", {
-    headers: {
-      authorization: `Bearer ${process.env.VUE_APP_NFT_STORAGE_KEY}`,
-    },
-    body: formData,
-    method: "POST",
-  });
-  const result = await response.json();
+import { NFTStorage, File } from "nft.storage";
 
-  if (result.ok === true) {
-    const { value } = result;
-    return value;
-  } else {
-    throw new Error(result.error.message);
-  }
+const store = async (name, description, data, fileName, type) => {
+  const nftStorage = new NFTStorage({
+    token: process.env.VUE_APP_NFT_STORAGE_KEY,
+  });
+
+  const metadata = await nftStorage.store({
+    name,
+    description,
+    image: new File([data], fileName, { type }),
+  });
+
+  return metadata;
 };
 
 export default {
@@ -51,6 +39,7 @@ export default {
       description: "",
       type: null,
       blob: null,
+      fileName: "",
       base64: null,
       onGoing: false,
       tokenId: null,
@@ -68,6 +57,7 @@ export default {
         this.readAsBlob(file);
         this.readAsBase64(file);
         this.type = file.type;
+        this.fileName = file.name;
       }
     },
 
@@ -92,12 +82,12 @@ export default {
       const submit = async () => {
         this.onGoing = true;
         try {
-          const metadata = await customStore(
+          const metadata = await store(
             this.name,
             this.description,
             this.blob,
-            this.type,
-            this.base64
+            this.fileName,
+            this.type
           );
           console.log("url", metadata.url);
           const inputUrl = metadata.url.replace(/^ipfs:\/\//, "");

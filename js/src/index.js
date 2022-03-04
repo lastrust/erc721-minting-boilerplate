@@ -1,63 +1,48 @@
 import "main.css";
-import env from "../env.json";
 import bunzz from "bunzz-sdk";
+import { NFTStorage, File } from "nft.storage";
 
-const DAPP_ID = env.JS_DAPP_ID;
-const API_KEY = env.JS_API_KEY;
-const NFT_STORAGE_KEY = env.JS_APP_NFT_STORAGE_KEY;
-let handler = null,
-  userAddress = null,
-  contract = null,
-  type = null,
-  blob = null,
-  base64 = null,
-  tokenId = null,
-  name = "",
-  description = "";
-const init = async () => {
-  handler = await bunzz.initializeHandler({
-    dappId: DAPP_ID,
-    apiKey: API_KEY,
-  });
-  return handler;
+const globalStorage = {
+  handler: null,
+  contract: null,
+  uploadedFile: {
+    fileName: null,
+    type: null,
+    blob: null,
+  },
 };
 
-const customStore = async (name, description, data, type, base64) => {
-  var formData = new FormData();
-  formData.append("image", new File([data], { type }));
-  formData.append(
-    "meta",
-    JSON.stringify({
-      name,
-      description,
-      base64: base64,
-    })
-  );
-  const response = await fetch("https://api.nft.storage/store/", {
-    headers: {
-      authorization: `Bearer ${NFT_STORAGE_KEY}`,
-    },
-    body: formData,
-    method: "POST",
+const init = async () => {
+  globalStorage.handler = await bunzz.initializeHandler({
+    dappId: process.env.JS_DAPP_ID,
+    apiKey: process.env.JS_API_KEY,
   });
-  const result = await response.json();
+};
 
-  if (result.ok === true) {
-    const { value } = result;
-    return value;
-  } else {
-    throw new Error(result.error.message);
-  }
+const store = async (name, description, data, fileName, type) => {
+  const nftStorage = new NFTStorage({
+    token: process.env.JS_APP_NFT_STORAGE_KEY,
+  });
+
+  const metadata = await nftStorage.store({
+    name,
+    description,
+    image: new File([data], fileName, { type }),
+  });
+
+  return metadata;
 };
 
 const setup = async () => {
   try {
-    userAddress = await handler.getSignerAddress();
-    contract = await handler.getContract("NFT (IPFS Mintable)");
+    globalStorage.contract = await globalStorage.handler.getContract(
+      "NFT (IPFS Mintable)"
+    );
   } catch (error) {
     console.error(error);
   }
 };
+
 const main = async () => {
   await init();
   await setup();
@@ -77,26 +62,27 @@ const mint = async () => {
   toggleShowHideByClassName("mint");
   toggleShowHideByClassName("loading");
   try {
-    name = document.getElementsByName("name")[0].value;
-    description = document.getElementsByName("description")[0].value;
-    const metadata = await customStore(name, description, blob, type, base64);
-    console.log("url", metadata.url);
+    const name = document.getElementsByName("name")[0].value;
+    const description = document.getElementsByName("description")[0].value;
+    const { blob, fileName, type } = globalStorage.uploadedFile;
+    const metadata = await store(name, description, blob, fileName, type);
     const inputUrl = metadata.url.replace(/^ipfs:\/\//, "");
     console.log(inputUrl);
-    const tx = await contract.safeMint(userAddress, inputUrl);
+
+    const address = await globalStorage.handler.getSignerAddress();
+    const tx = await globalStorage.contract.safeMint(address, inputUrl);
     const receipt = await tx.wait();
     const event = receipt.events[0];
-    const _tokenId = event.args[2];
-    tokenId = _tokenId;
-    base64 = null;
-    window.alert("Succeeded to mint");
+    const tokenId = event.args[2];
 
+    window.alert("Succeeded to mint");
     addTextAndShowElement("token", `Token ID: ${tokenId}`);
   } catch (err) {
     console.error(err);
   } finally {
     toggleShowHideByClassName("mint");
     toggleShowHideByClassName("loading");
+    toggleShowHideByClassName("mint-preview");
   }
 };
 
@@ -108,16 +94,15 @@ const addTextAndShowElement = (className, text) => {
 const get = async () => {
   toggleShowHideByClassName("get");
   try {
-    console.log(contract, tokenId);
-    tokenId = document.getElementsByName("tokenId")[0].value;
-    const { data: tokenUri } = await contract.tokenURI(tokenId);
+    const tokenId = document.getElementsByName("tokenId")[0].value;
+    const { data: tokenUri } = await globalStorage.contract.tokenURI(tokenId);
     const url = tokenUri.replace(/^ipfs:\/\//, "https://ipfs.io/ipfs/");
     const res = await fetch(url);
     const data = await res.json();
-    base64 = data.base64;
-    name = data.name;
-    description = data.description;
-    showImage("get-preview", base64);
+    const image = data.image.replace(/^ipfs:\/\//, "https://ipfs.io/ipfs/");
+    const name = data.name;
+    const description = data.description;
+    showImage("get-preview", image);
     addTextAndShowElement("name", `Name: ${name}`);
     addTextAndShowElement("description", `Description: ${description}`);
   } catch (err) {
@@ -134,16 +119,18 @@ const selectFile = function (e) {
     if (file) {
       readAsBlob(file);
       readAsBase64(file);
-      type = file.type;
+      globalStorage.uploadedFile.type = file.type;
+      globalStorage.uploadedFile.fileName = file.name;
     }
   }
 };
+
 const readAsBlob = function (file) {
   const reader = new FileReader();
   reader.readAsArrayBuffer(file);
   reader.onload = () => {
     console.log(reader.result);
-    blob = reader.result;
+    globalStorage.uploadedFile.blob = reader.result;
   };
 };
 
@@ -151,10 +138,7 @@ const readAsBase64 = function (file) {
   const reader = new FileReader();
   reader.readAsDataURL(file);
   reader.onloadend = () => {
-    console.log(reader.result);
-    base64 = reader.result;
-
-    showImage("mint-preview", base64);
+    showImage("mint-preview", reader.result);
   };
 };
 
@@ -215,19 +199,19 @@ const getErc721Checker = () => {
   getButton.innerText = "get";
   getButton.onclick = get;
 
-  const imageElement = createElement("img", "image hidden get-preview");
-
   const nameElement = createElement("p", "name hidden");
 
   const descriptionElement = createElement("p", "description hidden");
+
+  const imageElement = createElement("img", "image hidden get-preview");
 
   parent.append(
     pTag,
     tokenIdInput,
     getButton,
-    imageElement,
     nameElement,
-    descriptionElement
+    descriptionElement,
+    imageElement
   );
 
   return parent;
