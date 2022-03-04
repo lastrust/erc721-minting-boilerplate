@@ -1,10 +1,10 @@
 import { useState } from "react";
 
 export const ERC721Checker = ({ bunzz, userAddress }) => {
-  const [base64, setBase64] = useState(null);
   const [tokenId, setTokenId] = useState("");
   const [name, setName] = useState("");
   const [description, setDescription] = useState("");
+  const [image, setImage] = useState("");
   const [onGoing, setOnGoing] = useState(false);
 
   const submit = async () => {
@@ -15,9 +15,9 @@ export const ERC721Checker = ({ bunzz, userAddress }) => {
       const url = tokenUri.replace(/^ipfs:\/\//, "https://ipfs.io/ipfs/");
       const res = await fetch(url);
       const data = await res.json();
-      setBase64(data.base64);
       setName(data.name);
       setDescription(data.description);
+      setImage(data.image.replace(/^ipfs:\/\//, "https://ipfs.io/ipfs/"));
     } catch (err) {
       console.error(err);
     } finally {
@@ -27,9 +27,7 @@ export const ERC721Checker = ({ bunzz, userAddress }) => {
 
   return (
     <div className="wrapper">
-      <p className="title">
-        Step2: Get your NFT
-      </p>
+      <p className="title">Step2: Get your NFT</p>
       <input
         placeholder="token ID"
         value={tokenId}
@@ -37,21 +35,13 @@ export const ERC721Checker = ({ bunzz, userAddress }) => {
         type="text"
       />
       {onGoing ? (
-        <div className="center">
-          Loading...
-        </div>
+        <div className="center">Loading...</div>
       ) : (
-        <button onClick={submit}>
-          get
-        </button>
-      )}
-      {base64 ? (
-          <img src={base64} alt="hoge" className="image" />
-      ) : (
-        <></>
+        <button onClick={submit}>get</button>
       )}
       {name ? <p>Name: {name}</p> : <></>}
       {description ? <p>Description: {description}</p> : <></>}
+      {image ? <img src={image} alt="image" className="image" /> : <></>}
     </div>
   );
 };
