@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { NFTStorage, File } from "nft.storage";
+import useWeb3 from "../hooks/useWeb3";
 
 const nftStorage = new NFTStorage({
   token: process.env.REACT_APP_NFT_STORAGE_KEY,
@@ -15,7 +16,8 @@ const store = async (name, description, data, fileName, type) => {
   return metadata;
 };
 
-export const ERC721Minter = ({ bunzz, userAddress }) => {
+export const ERC721Minter = () => {
+  const { userAddress, mintNFT } = useWeb3();
   const [blob, setBlob] = useState(null);
   const [fileName, setFileName] = useState(null);
   const [base64, setBase64] = useState(null);
@@ -59,10 +61,9 @@ export const ERC721Minter = ({ bunzz, userAddress }) => {
     setOnGoing(true);
     try {
       const metadata = await store(name, description, blob, fileName, type);
-      const contract = await bunzz.getContract("NFT (IPFS Mintable)");
       const inputUrl = metadata.url.replace(/^ipfs:\/\//, "");
 
-      const tx = await contract.safeMint(userAddress, inputUrl);
+      const tx = await mintNFT(userAddress, inputUrl);
       const receipt = await tx.wait();
       console.log(receipt);
 
