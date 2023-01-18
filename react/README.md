@@ -2,12 +2,6 @@
 
 By cloning this repository, you can instantly create a mint application of ERC721 minting.
 
-## Overview
-
-This application uses the [bunzz-sdk](https://www.npmjs.com/package/bunzz-sdk) to communicate smart contact.
-
-For detailed instructions on how to use bunzz-sdk, see [here](https://www.npmjs.com/package/bunzz-sdk).
-
 ## Getting Started
 
 ### 1. Clone
@@ -20,33 +14,12 @@ $ cd erc721-minting-boilerplate
 ### 2. Create your DApp with Bunzz
 
 Please access to [Bunzz](https://app.bunzz.dev).
-And pease refer to [this video]() to create a DApp project and deploy smart contract.
 
 For this application, you need to deploy "NFT (IPFS Mitable)" smart contract at a minimum.
 
-### 3. Get DApp ID and API Key
+### 3. Configure environment
 
-When you have finished creating your DApp project and deploying smart contract, copy the **API key** and **DApp ID**.
-
-You can get your **API Key** and **DApp ID** from **Client SDK** in sidebar.
-
-<img width="235" alt="スクリーンショット 2021-12-09 11 47 40" src="https://user-images.githubusercontent.com/53442928/145325497-913c5509-0b3f-44ea-8a26-ff7399218dbc.png">
-
-And write them in the `.env` file.
-
-```bash
-# Create .env file
-$ touch .env
-```
-
-Contents of `.env` file↓
-Please replace YOUR_DAPP_ID and YOUR_API_KEY with values that you copied.
-```
-REACT_APP_DAPP_ID=YOUR_DAPP_ID
-REACT_APP_API_KEY=YOUR_API_KEY
-```
-
-### 4. Create NFT Storage
+- Create NFT Storage
 
 NFT Storage is free storage for NFT.
 Please access to [this page](https://nft.storage/) and login.
@@ -56,9 +29,46 @@ You can get your API key from **API Keys** page.
 
 Let's add `REACT_APP_NFT_STORAGE_KEY` to `.env` file.
 ```
-...
 REACT_APP_NFT_STORAGE_KEY=YOUR_NFT_STORAGE_KEY
 ```
+
+- Add INFURA_KEY
+
+Let's add `REACT_APP_INFURA_KEY` to `.env` file.
+```
+REACT_APP_INFURA_KEY=YOUR_INFURA_KEY
+```
+
+You can refer this guide: [How to get infura key](https://ethereumico.io/knowledge-base/infura-api-key-guide/)
+
+- Add Network name
+
+Let's add `REACT_APP_NETWORK`
+
+If you deployed the contract on goerli network, add this.
+```
+REACT_APP_NETWORK=goerli
+```
+
+### 4. Update constant.js
+
+Open `utils/constant.js` file.
+
+Add this in NETWORK_LIST
+
+```
+goerli: {
+    chainName: "Goerli Testnet",
+    chainIdHex: "0x5",
+    chainId: 5,
+    RPC: "https://goerli.infura.io/v3/" + process.env.REACT_APP_INFURA_KEY,
+    contracts: {
+        ERC721URIStorage: ""
+    }
+}
+```
+
+Set ERC721URIStorage with the contract address you deployed.
 
 ### 5. Start application
 
@@ -66,7 +76,6 @@ REACT_APP_NFT_STORAGE_KEY=YOUR_NFT_STORAGE_KEY
 $ yarn install
 $ yarn start
 ```
-
 
 ### 6. Try to use application
 
