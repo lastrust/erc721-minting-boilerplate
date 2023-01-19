@@ -50,6 +50,8 @@ If you deployed the contract on goerli network, add this.
 REACT_APP_NETWORK=goerli
 ```
 
+*** Don't share the private keys on github ***
+
 ### 4. Update constant.js
 
 Open `utils/constant.js` file.
@@ -69,6 +71,8 @@ goerli: {
 ```
 
 Set ERC721URIStorage with the contract address you deployed.
+
+*** Need to share deployed smart contract address with users on github. ***
 
 ### 5. Start application
 
