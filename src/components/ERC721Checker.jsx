@@ -1,6 +1,9 @@
 import { useState } from "react";
+import useWeb3 from "../hooks/useWeb3";
 
-export const ERC721Checker = ({ bunzz, userAddress }) => {
+export const ERC721Checker = () => {
+
+  const { userAddress, getTokenURI } = useWeb3();
   const [tokenId, setTokenId] = useState("");
   const [name, setName] = useState("");
   const [description, setDescription] = useState("");
@@ -10,8 +13,7 @@ export const ERC721Checker = ({ bunzz, userAddress }) => {
   const submit = async () => {
     setOnGoing(true);
     try {
-      const contract = await bunzz.getContract("NFT (IPFS Mintable)");
-      const { data: tokenUri } = await contract.tokenURI(tokenId);
+      const tokenUri = await getTokenURI(tokenId);
       const url = tokenUri.replace(/^ipfs:\/\//, "https://ipfs.io/ipfs/");
       const res = await fetch(url);
       const data = await res.json();
